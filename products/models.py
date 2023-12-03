@@ -11,16 +11,19 @@ class Category(models.Model):
     update_time = models.DateTimeField(_('update time'),auto_now=True)
 
     class Meta:
-        db_table = 'category'
+        db_table = 'categories'
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
+    
+    def __str__(self):
+        return self.title
 
 class Product(models.Model):
     title = models.CharField(_('title'),max_length=20)
     description = models.TextField(_('description'),blank=True,max_length=50)
     avatar = models.ImageField(_('avatar'),blank=True,upload_to='products/')
     is_enable = models.BooleanField(_('is enable'),default=True)
-    categoris = models.ManyToManyField(Category,verbose_name=_('categories'),blank=True)
+    categories = models.ManyToManyField(Category,verbose_name=_('categories'),blank=True)
     create_time = models.DateTimeField(_('create time'),auto_now_add=True)
     update_time = models.DateTimeField(_('update time'),auto_now=True)
 
@@ -28,6 +31,10 @@ class Product(models.Model):
         db_table = 'products'
         verbose_name = _('product')
         verbose_name_plural = _('products')
+        
+    def __str__(self):
+        return self.title
+    
 
 class File(models.Model):
     product = models.ForeignKey('Product',verbose_name=_('product'),on_delete=models.CASCADE)
@@ -41,3 +48,6 @@ class File(models.Model):
         db_table = 'files'
         verbose_name = _('file')
         verbose_name_plural = _('files')
+        
+    def __str__(self):
+        return self.title
