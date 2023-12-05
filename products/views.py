@@ -7,6 +7,22 @@ from .models import Category,Product,File
 from .serializers import CategorySerializer,ProductSerializer,FileSerializers
 
 
+class CategoryListView(APIView):
+    def get(self,request):
+        category = Category.objects.all()
+        serializer = CategorySerializer(category,many=True,context={'request':request})
+        return Response(serializer.data)
+    
+class CategoryDetailView(APIView):
+    def get(self,request,pk):
+        try :
+            category = Category.objects.get(pk=pk)
+        except Category.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = CategorySerializer(category,context={'request':request})
+        return Response(serializer.data)
+        
+
 class ProductListView(APIView):
     def get(self,request):
         product = Product.objects.all()
@@ -22,4 +38,19 @@ class ProductDetailView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         serializer = ProductSerializer(product,context={'request':request})
+        return Response(serializer.data)
+    
+class FileListView(APIView):
+    def get(self,request,product_id):
+        files = File.objects.filter(product_id=product_id)
+        serializer = FileSerializers(files,many=True,context = {'request':request})
+        return Response(serializer.data)
+    
+class FileDetailView(APIView):
+    def get(self,request,product_id,pk):
+        try :
+            f = File.objects.get(pk=pk,product_id=product_id)
+        except File.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = FileSerializers(f,context={'request':request})
         return Response(serializer.data)
